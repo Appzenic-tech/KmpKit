@@ -2,7 +2,7 @@ plugins {
     alias(libs.plugins.kotlinMultiplatform)
     alias(libs.plugins.androidKotlinMultiplatformLibrary)
     alias(libs.plugins.androidLint)
-    `maven-publish`
+//    `maven-publish`
 }
 
 kotlin {
@@ -75,3 +75,33 @@ kotlin {
         }
     }
 }
+
+//publishing {
+//    publications {
+//        withType<MavenPublication> {
+//            groupId = "com.github.appzenic"
+////            artifactId = "camera-ui-kmp"
+//            version = "0.0.10"
+////            artifact("${buildDir}/outputs/aar/camera-ui-kmp.aar")
+//
+//            pom {
+//                name.set("Camera UI KMP")
+//                description.set("Camera UI components for Compose Multiplatform")
+//                url.set("https://github.com/Appzenic-tech/camera-ui-kmp")
+//            }
+//        }
+//    }
+//
+//    repositories {
+//        maven {
+//            name = "GithubPackages"
+//            url = uri("https://maven.pkg.github.com/Appzenic-tech/camera-ui-kmp")
+//            credentials {
+//                username = project.findProperty("gpr.user") as String?
+//                password = project.findProperty("gpr.key") as String?
+////                username = System.getenv("GITHUB_USER") ?:""
+////                password = System.getenv("GITHUB_TOKEN")?:""
+//            }
+//        }
+//    }
+//}
