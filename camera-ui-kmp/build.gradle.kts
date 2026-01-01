@@ -1,8 +1,13 @@
+import java.io.FileInputStream
+import java.util.Properties
+
 plugins {
-    alias(libs.plugins.kotlinMultiplatform)
-    alias(libs.plugins.androidKotlinMultiplatformLibrary)
-    alias(libs.plugins.androidLint)
-//    `maven-publish`
+    alias(libs.plugins.kotlin.multiplatform)
+    alias(libs.plugins.compose.multiplatform)
+    alias(libs.plugins.android.kotlin.multiplatform.library)
+    alias(libs.plugins.android.lint)
+    alias(libs.plugins.compose.compiler)
+    `maven-publish`
 }
 
 kotlin {
@@ -19,6 +24,9 @@ kotlin {
             sourceSetTreeName = "test"
         }.configure {
             instrumentationRunner = "androidx.test.runner.AndroidJUnitRunner"
+        }
+        androidResources {
+            enable = true
         }
     }
 
@@ -46,6 +54,13 @@ kotlin {
         commonMain {
             dependencies {
                 implementation(libs.kotlin.stdlib)
+                implementation(compose.runtime)
+                implementation(compose.foundation)
+                implementation(compose.material3)
+                implementation(compose.ui)
+                implementation(compose.components.resources)
+                implementation(libs.constraintlayout.compose.multiplatform)
+                implementation(compose.components.uiToolingPreview)
             }
         }
 
@@ -57,6 +72,7 @@ kotlin {
 
         androidMain {
             dependencies {
+                implementation(libs.androidx.activity.compose)
                 implementation(libs.bundles.camerax)
             }
         }
@@ -76,32 +92,35 @@ kotlin {
     }
 }
 
-//publishing {
-//    publications {
-//        withType<MavenPublication> {
-//            groupId = "com.github.appzenic"
-////            artifactId = "camera-ui-kmp"
-//            version = "0.0.10"
-////            artifact("${buildDir}/outputs/aar/camera-ui-kmp.aar")
-//
-//            pom {
-//                name.set("Camera UI KMP")
-//                description.set("Camera UI components for Compose Multiplatform")
-//                url.set("https://github.com/Appzenic-tech/camera-ui-kmp")
-//            }
-//        }
-//    }
-//
-//    repositories {
-//        maven {
-//            name = "GithubPackages"
-//            url = uri("https://maven.pkg.github.com/Appzenic-tech/camera-ui-kmp")
-//            credentials {
-//                username = project.findProperty("gpr.user") as String?
-//                password = project.findProperty("gpr.key") as String?
-////                username = System.getenv("GITHUB_USER") ?:""
-////                password = System.getenv("GITHUB_TOKEN")?:""
-//            }
-//        }
-//    }
-//}
+val localProperties = Properties()
+val localPropertiesFile = rootProject.file("local.properties")
+if (localPropertiesFile.exists()) {
+    localProperties.load(FileInputStream(localPropertiesFile))
+}
+
+publishing {
+    publications {
+        named<MavenPublication>("kotlinMultiplatform") {
+            artifactId = "camera-ui-kmp"
+        }
+        withType<MavenPublication> {
+            groupId = "com.appzenic"
+            version = "0.0.13"
+            pom {
+                name.set("Camera UI KMP")
+                description.set("Camera UI components for Compose Multiplatform")
+                url.set("https://github.com/Appzenic-tech/KmpKit")
+            }
+        }
+    }
+    repositories {
+        maven {
+            name = "GithubPackages"
+            url = uri("https://maven.pkg.github.com/Appzenic-tech/KmpKit")
+            credentials {
+                username = localProperties.getProperty("gpr.user")
+                password = localProperties.getProperty("gpr.key")
+            }
+        }
+    }
+}
